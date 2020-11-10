@@ -1,6 +1,8 @@
 import pygame
 import math
 
+import buttons as bt
+
 class sudokusolver:
     def __init__(self, board=[
         [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -14,6 +16,8 @@ class sudokusolver:
         [0, 0, 0, 0, 8, 0, 0, 7, 9]
     ]):
         self.board = board
+
+        self.solveButton = bt.button(100,100,(400,400))
         
         
 
@@ -187,7 +191,7 @@ def main():
                 
                     sudoku.drawBoard(size, offset)
                     sudoku.display()
-                    break
+                    
         
 
         
