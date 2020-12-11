@@ -1,7 +1,7 @@
 import pygame
 import math
 
-import buttons as bt
+import buttons
 
 class sudokusolver:
     def __init__(self, board=[
@@ -16,8 +16,9 @@ class sudokusolver:
         [0, 0, 0, 0, 8, 0, 0, 7, 9]
     ]):
         self.board = board
-
-        self.solveButton = bt.button(100,100,(400,400))
+        print(self.board)
+        
+        
         
         
 
@@ -27,6 +28,8 @@ class sudokusolver:
             for j in range(9):
                 if self.board[i][j] == 0:
                     return (i, j)
+        
+        return True
 
     def getCandidates(self,emptyPosition):
         candidate = {1, 2, 3, 4, 5, 6, 7, 8, 9}
@@ -67,7 +70,8 @@ class displaySudoku:
     def __init__(self): 
         pygame.init()
         self.sudoku=sudokusolver()
-
+        self.solveButton = buttons.solveButton((600, 200))
+        self.running = True
         self.screen = pygame.display.set_mode((800, 640))
         pygame.display.set_caption("Sudoku Solver")
 
@@ -82,6 +86,7 @@ class displaySudoku:
 
     def drawBoard(self,size,offset):
         self.screen.fill((255, 255, 255))
+        self.solveButton.makeButton(self.screen)
         pygame.draw.line(self.screen, (0, 0, 0),
                      (-1/4*size+offset, (-1/4)*size+offset), ((9-1/4)*size+offset, (-1/4)*size+offset))
         pygame.draw.line(self.screen, (0, 0, 0),
@@ -151,6 +156,9 @@ class displaySudoku:
                 
                 if event.type==pygame.MOUSEBUTTONDOWN:
                     asking=False
+                if event.type == pygame.QUIT:
+                    asking=False
+                    self.running = False
 
                 
         print(number)
@@ -166,23 +174,29 @@ def main():
     size=50
     offset=50
 
-    running=True
     sudoku=displaySudoku()
     
     sudoku.drawBoard(size,offset)
     
+    
     sudoku.display()
 
-    while(running):
+    while(sudoku.running):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                sudoku.running = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 
                 position=pygame.mouse.get_pos()
-                x = math.floor((position[0]-offset)/size)
-                y = math.floor((position[1]-offset)/size)
+
+                if sudoku.solveButton.checkPressed(position[0],position[1]):
+                    sudoku.sudoku.solver()
+                    sudoku.drawBoard(size, offset)
+                    sudoku.display()
+                
+                x = math.floor((position[0]-offset+size/4)/size)
+                y = math.floor((position[1]-offset+size/4)/size)
                 if(x<9 and y<9):
                     #sudoku.sudoku.board[math.floor((position[0]-offset)/size)][math.floor((position[1]-offset)/size)]=input('enter a number')
                     print(1)
