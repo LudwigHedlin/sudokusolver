@@ -19,10 +19,6 @@ class sudokusolver:
         print(self.board)
         
         
-        
-        
-
-
     def getEmpty(self):
         for i in range(9):
             for j in range(9):
@@ -70,13 +66,37 @@ class displaySudoku:
     def __init__(self): 
         pygame.init()
         self.sudoku=sudokusolver()
+        self.sudokusolved=sudokusolver(board=[
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    ])
+        self.sudokusolved.solver()
         self.solveButton = buttons.solveButton((600, 200))
+        self.checkButton=buttons.checkButton((600,270))
         self.running = True
         self.screen = pygame.display.set_mode((800, 640))
         pygame.display.set_caption("Sudoku Solver")
 
     def __del__(self):
         pygame.quit()
+
+    def checkBoard(self):
+        for i in range(9):
+            for j in range(9):
+                answer=self.sudoku.board[i][j]
+                check=self.sudokusolved.board[i][j]
+                if (answer):
+                    if(answer!=check):
+                        return False
+
+        return True 
 
     def numberSurface(self,posX,posY,number,font='bold',size=50,color=(0,0,0)):
         font=pygame.font.SysFont(font,size)
@@ -87,6 +107,7 @@ class displaySudoku:
     def drawBoard(self,size,offset):
         self.screen.fill((255, 255, 255))
         self.solveButton.makeButton(self.screen)
+        self.checkButton.makeButton(self.screen)
         pygame.draw.line(self.screen, (0, 0, 0),
                      (-1/4*size+offset, (-1/4)*size+offset), ((9-1/4)*size+offset, (-1/4)*size+offset))
         pygame.draw.line(self.screen, (0, 0, 0),
@@ -153,6 +174,9 @@ class displaySudoku:
                         asking = False
                     elif event.key == pygame.K_ESCAPE:
                         asking=False
+                    elif event.key==pygame.K_BACKSPACE:
+                        number=0
+                        asking=False
                 
                 if event.type==pygame.MOUSEBUTTONDOWN:
                     asking=False
@@ -194,6 +218,11 @@ def main():
                     sudoku.sudoku.solver()
                     sudoku.drawBoard(size, offset)
                     sudoku.display()
+                elif sudoku.checkButton.checkPressed(position[0],position[1]):
+                    if sudoku.checkBoard():
+                        print("All good!")
+                    else:
+                        print("A mistake has been made")
                 
                 x = math.floor((position[0]-offset+size/4)/size)
                 y = math.floor((position[1]-offset+size/4)/size)
@@ -210,8 +239,6 @@ def main():
 
         
         
-    del sudoku
-
 main()
 
 
