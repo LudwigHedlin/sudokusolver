@@ -1,7 +1,9 @@
 import pygame
 import math
+import sqlite3
 
 import buttons
+import data
 
 class sudokusolver:
     def __init__(self, board=[
@@ -83,6 +85,8 @@ class displaySudoku:
         self.running = True
         self.screen = pygame.display.set_mode((800, 640))
         pygame.display.set_caption("Sudoku Solver")
+
+        self.data=data.sudokuData()
 
     def __del__(self):
         pygame.quit()
